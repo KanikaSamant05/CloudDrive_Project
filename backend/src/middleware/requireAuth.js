@@ -10,28 +10,27 @@ async function requireAuth(req, res, next) {
     });
   }
 
-  // Try the access token first
+  // Try access token first
   if (token) {
     const { data: { user }, error } = await supabaseAdmin.auth.getUser(token);
-
     if (!error && user) {
       req.user = user;
       return next();
     }
   }
 
-  // Access token failed — try refreshing using the refresh token
+  // Access token failed — try refresh token
   if (refreshToken) {
     const { data, error } = await supabaseAdmin.auth.refreshSession({
       refresh_token: refreshToken,
     });
 
     if (!error && data.session) {
-      // Set new cookies
+      // ← production cookie settings
       const cookieOpts = {
         httpOnly: true,
-        secure:   false,
-        sameSite: 'lax',
+        secure:   true,
+        sameSite: 'none',
         path:     '/',
         maxAge:   7 * 24 * 60 * 60 * 1000,
       };
@@ -47,7 +46,6 @@ async function requireAuth(req, res, next) {
     }
   }
 
-  // Both failed
   return res.status(401).json({
     error: { code: 'INVALID_TOKEN', message: 'Session expired, please log in again' }
   });

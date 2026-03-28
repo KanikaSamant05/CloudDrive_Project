@@ -16,12 +16,13 @@ const loginSchema = z.object({
   password: z.string().min(1),
 });
 
+// ── Cookie options — production safe ─────────────────────────────────
 const cookieOpts = {
-httpOnly: true,
-secure:   process.env.NODE_ENV === 'production',
-sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-path:     '/',
-maxAge:   7 * 24 * 60 * 60 * 1000,
+  httpOnly: true,
+  secure:   true,       // ← always true for cross-domain
+  sameSite: 'none',     // ← always none for cross-domain
+  path:     '/',
+  maxAge:   7 * 24 * 60 * 60 * 1000,
 };
 
 // ── POST /api/auth/register ──────────────────────────────────────────
@@ -51,7 +52,9 @@ router.post('/register', async (req, res) => {
     });
   }
 
-  return res.status(201).json({ message: 'Account created! You can now log in.' });
+  return res.status(201).json({
+    message: 'Account created! You can now log in.'
+  });
 });
 
 // ── POST /api/auth/login ─────────────────────────────────────────────
@@ -97,13 +100,23 @@ router.post('/logout', requireAuth, async (req, res) => {
 
   await supabaseAdmin.auth.admin.signOut(token);
 
-  res.clearCookie('access_token',  { path: '/', sameSite: 'none',secure: true, httpOnly: true });
-  res.clearCookie('refresh_token', { path: '/', sameSite: 'none', secure: true, httpOnly: true });
+  res.clearCookie('access_token', {
+    path:     '/',
+    httpOnly: true,
+    secure:   true,
+    sameSite: 'none',
+  });
+  res.clearCookie('refresh_token', {
+    path:     '/',
+    httpOnly: true,
+    secure:   true,
+    sameSite: 'none',
+  });
 
   return res.json({ message: 'Logged out successfully' });
 });
 
-// ── GET /api/auth/me 
+// ── GET /api/auth/me ─────────────────────────────────────────────────
 router.get('/me', requireAuth, async (req, res) => {
   const { data: profile, error } = await supabaseAdmin
     .from('users')
