@@ -19,8 +19,8 @@ const loginSchema = z.object({
 // ── Cookie options — production safe ─────────────────────────────────
 const cookieOpts = {
   httpOnly: true,
-  secure:   true,       // ← always true for cross-domain
-  sameSite: 'none',     // ← always none for cross-domain
+  secure:   true,       
+  sameSite: 'none',    
   path:     '/',
   maxAge:   7 * 24 * 60 * 60 * 1000,
 };
