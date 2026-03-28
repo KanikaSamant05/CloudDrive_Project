@@ -221,7 +221,6 @@ export default function Sidebar() {
                        text-sm font-medium text-gray-600 hover:bg-red-50
                        hover:text-red-600 transition-colors cursor-pointer'
           >
-            <span>🚪</span>
             Sign out
           </button>
         </div>

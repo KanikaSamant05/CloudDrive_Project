@@ -363,10 +363,9 @@ function FileRow({ file, isFirst, onDelete, onRename }) {
         <button
           onClick={handleDownload}
           disabled={downloading}
-          className='text-xs text-blue-600 hover:underline px-2 py-1
-                     rounded hover:bg-blue-50 disabled:opacity-50'
+          className='text-xs text-blue-600 hover: px-2 py-1 rounded hover:bg-blue-100 disabled:opacity-50'
         >
-          ⬇ Download
+          Download
         </button>
         <button
           onClick={() => setRenaming(true)}
@@ -377,15 +376,13 @@ function FileRow({ file, isFirst, onDelete, onRename }) {
         </button>
         <button
           onClick={() => setShowShare(true)}
-          className='text-xs text-green-600 hover:underline px-2 py-1
-                     rounded hover:bg-green-50'
+          className='text-xs text-green-600 hover: px-2 py-1 rounded hover:bg-green-100'
         >
           👥 Share
         </button>
         <button
           onClick={() => setShowLink(true)}
-          className='text-xs text-purple-600 hover:underline px-2 py-1
-                     rounded hover:bg-purple-50'
+          className='text-xs text-purple-600 hover: px-2 py-1 rounded hover:bg-purple-100'
         >
           🔗 Link
         </button>

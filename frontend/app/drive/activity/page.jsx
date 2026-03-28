@@ -95,6 +95,7 @@ export default function ActivityPage() {
                   {timeAgo(activity.created_at)}
 </p>
 </div>
+
 </div>
           ))}
 </div>
