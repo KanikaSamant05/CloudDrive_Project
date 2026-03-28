@@ -19,10 +19,10 @@ const loginSchema = z.object({
 // ── Cookie options — production safe ─────────────────────────────────
 const cookieOpts = {
   httpOnly: true,
-  secure:   true,       // ← always true for cross-domain
-  sameSite: 'none',     // ← always none for cross-domain
+  secure:   true,      
+  sameSite: 'none',     
   path:     '/',
-  maxAge:   7 * 24 * 60 * 60 * 1000,
+  maxAge:   7 * 24 * 60 * 60 * 60,
 };
 
 // ── POST /api/auth/register ──────────────────────────────────────────
@@ -82,7 +82,7 @@ router.post('/login', async (req, res) => {
   res.cookie('access_token',  data.session.access_token,  cookieOpts);
   res.cookie('refresh_token', data.session.refresh_token, {
     ...cookieOpts,
-    maxAge: 30 * 24 * 60 * 60 * 1000,
+    maxAge: 30 * 24 * 60 * 60 * 60,
   });
 
   return res.json({
@@ -98,7 +98,7 @@ router.post('/login', async (req, res) => {
 router.post('/logout', requireAuth, async (req, res) => {
   const token = req.cookies?.access_token;
 
-  await supabaseAdmin.auth.admin.signOut(token);
+  await supabaseAdmin.auth.signOut(token);
 
   res.clearCookie('access_token', {
     path:     '/',
