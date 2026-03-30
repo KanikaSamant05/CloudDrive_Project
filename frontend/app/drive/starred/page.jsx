@@ -100,11 +100,26 @@ export default function StarredPage() {
 
 // ── StarredItem component ─────────────────────────────────────────────
 function StarredItem({ item, isFirst, onUnstar }) {
-  const [starred, setStarred] = useState(true); // always true here
+  const [starred,  setStarred]  = useState(true);
+  const [opening,  setOpening]  = useState(false);
 
   async function handleToggle() {
-    setStarred(false); // immediately show grey
-    await onUnstar();  // remove from list
+    setStarred(false);
+    await onUnstar();
+  }
+
+  // ── Open file in new tab ───────────────────────────────────────────
+  async function handleOpen() {
+    // Folders have no signed URL — nothing to open
+    if (item.type === 'folder') return;
+    setOpening(true);
+    const res  = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/files/${item.id}`,
+      { credentials: 'include' }
+    );
+    const data = await res.json();
+    if (data.signedUrl) window.open(data.signedUrl, '_blank');
+    setOpening(false);
   }
 
   return (
@@ -112,14 +127,35 @@ function StarredItem({ item, isFirst, onUnstar }) {
       className={`flex items-center gap-4 px-4 py-3 hover:bg-gray-50
                   ${!isFirst ? 'border-t border-gray-100' : ''}`}
     >
-      <span className='text-2xl'>
+      {/* ── Icon — clickable for files ──────────────────────────────── */}
+      <span
+        onClick={item.type === 'file' ? handleOpen : undefined}
+        className={`text-2xl ${
+          item.type === 'file'
+            ? 'cursor-pointer hover:opacity-70 transition-opacity'
+            : ''
+        }`}
+      >
         {item.type === 'folder' ? '🗂️' : '📄'}
       </span>
 
+      {/* ── Name — clickable for files ──────────────────────────────── */}
       <div className='flex-1 min-w-0'>
-        <p className='text-sm font-medium text-gray-700 truncate'>
-          {item.name}
-        </p>
+        {item.type === 'file' ? (
+          <button
+            onClick={handleOpen}
+            disabled={opening}
+            className='text-sm font-medium text-gray-700 hover:text-blue-600
+                       hover:underline truncate text-left w-full
+                       transition-colors disabled:opacity-50 block'
+          >
+            {opening ? 'Opening...' : item.name}
+          </button>
+        ) : (
+          <p className='text-sm font-medium text-gray-700 truncate'>
+            {item.name}
+          </p>
+        )}
         <p className='text-xs text-gray-400 mt-0.5'>
           {item.type}
           {item.size_bytes && (
@@ -134,14 +170,13 @@ function StarredItem({ item, isFirst, onUnstar }) {
         </p>
       </div>
 
-      {/* Star button — yellow when starred, grey when not */}
+      {/* ── Star button ─────────────────────────────────────────────── */}
       <button
         onClick={handleToggle}
         title='Remove from starred'
         className='p-1.5 rounded-lg hover:bg-gray-100 transition-colors'
       >
         {starred ? (
-          // Filled yellow star — item IS starred
           <svg
             xmlns='http://www.w3.org/2000/svg'
             viewBox='0 0 24 24'
@@ -159,7 +194,6 @@ function StarredItem({ item, isFirst, onUnstar }) {
             />
           </svg>
         ) : (
-          // Empty grey star — item is NOT starred
           <svg
             xmlns='http://www.w3.org/2000/svg'
             viewBox='0 0 24 24'
