@@ -17,14 +17,13 @@ export default function Sidebar() {
   const fileInputRef = useRef(null);
 
   const navItems = [
-    { href: '/drive',          label: 'My Drive',  icon: '🗂️' },
-    { href: '/drive/search',   label: 'Search',    icon: '🔍' },
-    { href: '/drive/shared',   label: 'Shared',    icon: '👥' },
-    { href: '/drive/starred',  label: 'Starred',   icon: '⭐' },
-    { href: '/drive/recent',   label: 'Recent',    icon: '🕐' },
-    { href: '/drive/activity', label: 'Activity',  icon: '📋' },
-    { href: '/drive/link',     label: 'Links',     icon: '🔗' },
-    { href: '/drive/trash',    label: 'Trash',     icon: '🗑️' },
+    { href: '/drive/search',   label: 'Search',   icon: '🔍' },
+    { href: '/drive/shared',   label: 'Shared',   icon: '👥' },
+    { href: '/drive/starred',  label: 'Starred',  icon: '⭐' },
+    { href: '/drive/recent',   label: 'Recent',   icon: '🕐' },
+    { href: '/drive/activity', label: 'Activity', icon: '📋' },
+    { href: '/drive/link',     label: 'Links',    icon: '🔗' },
+    { href: '/drive/trash',    label: 'Trash',    icon: '🗑️' },
   ];
 
   async function handleSignOut() {
@@ -64,17 +63,13 @@ export default function Sidebar() {
     setFolderName('');
     setShowNewFolder(false);
     setCreating(false);
-
-    // Navigate to My Drive to see the new folder
     router.push('/drive');
     router.refresh();
   }
 
   function handleFileUploadClick() {
     setShowMenu(false);
-    // Navigate to drive then trigger upload
     router.push('/drive');
-    // Small delay to let page load then click the upload zone
     setTimeout(() => {
       fileInputRef.current?.click();
     }, 500);
@@ -89,7 +84,6 @@ export default function Sidebar() {
         multiple
         className='hidden'
         onChange={(e) => {
-          // Navigate to drive — the upload will happen there
           router.push('/drive');
         }}
       />
@@ -97,12 +91,15 @@ export default function Sidebar() {
       <aside className='w-64 h-screen bg-white border-r border-gray-200
                         flex flex-col fixed left-0 top-0'>
 
-        {/* Logo */}
+        {/* Logo — clicking redirects to My Drive */}
         <div className='p-4 border-b border-gray-100'>
-          <div className='flex items-center gap-2'>
+          <Link
+            href='/drive'
+            className='flex items-center gap-2 hover:opacity-80 transition-opacity'
+          >
             <span className='text-2xl'>☁️</span>
             <span className='font-bold text-gray-800'>Cloud Drive</span>
-          </div>
+          </Link>
         </div>
 
         {/* + New button */}
@@ -212,7 +209,6 @@ export default function Sidebar() {
                           : 'text-gray-600 hover:bg-gray-100'
                         }`}
           >
-            <span>👤</span>
             Profile
           </Link>
           <button

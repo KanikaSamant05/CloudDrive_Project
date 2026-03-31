@@ -174,7 +174,7 @@ function StarredItem({ item, isFirst, onUnstar }) {
       <button
         onClick={handleToggle}
         title='Remove from starred'
-        className='p-1.5 rounded-lg hover:bg-gray-100 transition-colors'
+        className='p-1.5 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer'
       >
         {starred ? (
           <svg
