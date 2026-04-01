@@ -17,6 +17,7 @@ export default function Sidebar() {
   const fileInputRef = useRef(null);
 
   const navItems = [
+    { href: '/drive',          label: 'Home',     icon: null },
     { href: '/drive/search',   label: 'Search',   icon: '🔍' },
     { href: '/drive/shared',   label: 'Shared',   icon: '👥' },
     { href: '/drive/starred',  label: 'Starred',  icon: '⭐' },
@@ -67,14 +68,6 @@ export default function Sidebar() {
     router.refresh();
   }
 
-  function handleFileUploadClick() {
-    setShowMenu(false);
-    router.push('/drive');
-    setTimeout(() => {
-      fileInputRef.current?.click();
-    }, 500);
-  }
-
   return (
     <>
       {/* Hidden file input for upload */}
@@ -83,7 +76,7 @@ export default function Sidebar() {
         type='file'
         multiple
         className='hidden'
-        onChange={(e) => {
+        onChange={() => {
           router.push('/drive');
         }}
       />
@@ -91,15 +84,12 @@ export default function Sidebar() {
       <aside className='w-64 h-screen bg-white border-r border-gray-200
                         flex flex-col fixed left-0 top-0'>
 
-        {/* Logo — clicking redirects to My Drive */}
+        {/* Logo — non-clickable */}
         <div className='p-4 border-b border-gray-100'>
-          <Link
-            href='/drive'
-            className='flex items-center gap-2 hover:opacity-80 transition-opacity'
-          >
+          <div className='flex items-center gap-2'>
             <span className='text-2xl'>☁️</span>
             <span className='font-bold text-gray-800'>Cloud Drive</span>
-          </Link>
+          </div>
         </div>
 
         {/* + New button */}
@@ -108,7 +98,7 @@ export default function Sidebar() {
             onClick={() => setShowMenu(!showMenu)}
             className='w-full flex items-center gap-2 bg-blue-600 text-white
                        px-4 py-2.5 rounded-xl font-medium text-sm
-                       hover:bg-blue-700 transition-colors shadow-sm'
+                       hover:bg-blue-700 transition-colors shadow-sm cursor-pointer'
           >
             <span className='text-lg font-bold'>+</span>
             <span>New</span>
@@ -131,7 +121,7 @@ export default function Sidebar() {
                 }}
                 className='w-full flex items-center gap-3 px-4 py-3 text-sm
                            text-gray-700 hover:bg-gray-50 transition-colors
-                           text-left'
+                           text-left cursor-pointer'
               >
                 <span className='text-lg'>📄</span>
                 <div>
@@ -153,7 +143,7 @@ export default function Sidebar() {
                 }}
                 className='w-full flex items-center gap-3 px-4 py-3 text-sm
                            text-gray-700 hover:bg-gray-50 transition-colors
-                           text-left'
+                           text-left cursor-pointer'
               >
                 <span className='text-lg'>📁</span>
                 <div>
@@ -186,12 +176,15 @@ export default function Sidebar() {
                 href={item.href}
                 className={`flex items-center gap-3 px-3 py-2.5 rounded-lg
                             text-sm font-medium transition-colors mb-0.5
+                            cursor-pointer
                             ${isActive
                               ? 'bg-blue-50 text-blue-700'
                               : 'text-gray-600 hover:bg-gray-100 hover:text-gray-800'
                             }`}
               >
-                <span className='text-base'>{item.icon}</span>
+                {item.icon && (
+                  <span className='text-base'>{item.icon}</span>
+                )}
                 {item.label}
               </Link>
             );
@@ -203,7 +196,7 @@ export default function Sidebar() {
           <Link
             href='/drive/profile'
             className={`flex items-center gap-3 px-3 py-2.5 rounded-lg
-                        text-sm font-medium transition-colors
+                        text-sm font-medium transition-colors cursor-pointer
                         ${pathname === '/drive/profile'
                           ? 'bg-blue-50 text-blue-700'
                           : 'text-gray-600 hover:bg-gray-100'
@@ -244,7 +237,7 @@ export default function Sidebar() {
               autoFocus
               className='w-full border border-gray-300 rounded-lg px-3 py-2
                          focus:outline-none focus:ring-2 focus:ring-blue-500
-                         text-sm mb-4'
+                         text-sm mb-4 cursor-text'
             />
 
             <div className='flex gap-3 justify-end'>
@@ -255,7 +248,7 @@ export default function Sidebar() {
                   setError('');
                 }}
                 className='px-4 py-2 text-sm text-gray-600
-                           hover:bg-gray-100 rounded-lg'
+                           hover:bg-gray-100 rounded-lg cursor-pointer'
               >
                 Cancel
               </button>
@@ -263,7 +256,8 @@ export default function Sidebar() {
                 onClick={handleCreateFolder}
                 disabled={creating}
                 className='px-4 py-2 text-sm bg-blue-600 text-white
-                           rounded-lg hover:bg-blue-700 disabled:opacity-50'
+                           rounded-lg hover:bg-blue-700 disabled:opacity-50
+                           disabled:cursor-not-allowed cursor-pointer'
               >
                 {creating ? 'Creating...' : 'Create'}
               </button>
